@@ -17,4 +17,5 @@ type Product struct {
 	PriceMinus15 sql.NullInt64
 	FBPrice      sql.NullInt64
 	FBLink       sql.NullString
+	Active       string
 }

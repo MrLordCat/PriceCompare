@@ -28,7 +28,7 @@ func GetAllCategories(db *sql.DB) ([]string, error) {
 	return categories, nil
 }
 func GetProductsByCategoryFromDB(db *sql.DB, category string) ([]Product, error) {
-	rows, err := db.Query("SELECT id, title, category, offers, price, link_hv, link_amazon, price_amazon, price_diff, delivery_time, used, price_minus_15, fb_price, fb_link  FROM products WHERE category = ?", category)
+	rows, err := db.Query("SELECT id, title, category, offers, price, link_hv, link_amazon, price_amazon, price_diff, delivery_time, used, price_minus_15, fb_price, fb_link, active  FROM products WHERE category = ?", category)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func GetProductsByCategoryFromDB(db *sql.DB, category string) ([]Product, error)
 	var products []Product
 	for rows.Next() {
 		var product Product
-		err := rows.Scan(&product.ID, &product.Title, &product.Category, &product.Offers, &product.Price, &product.LinkHV, &product.LinkAmazon, &product.PriceAmazon, &product.PriceDiff, &product.DeliveryTime, &product.Used, &product.PriceMinus15, &product.FBPrice, &product.FBLink)
+		err := rows.Scan(&product.ID, &product.Title, &product.Category, &product.Offers, &product.Price, &product.LinkHV, &product.LinkAmazon, &product.PriceAmazon, &product.PriceDiff, &product.DeliveryTime, &product.Used, &product.PriceMinus15, &product.FBPrice, &product.FBLink, &product.Active)
 		if err != nil {
 			return nil, err
 		}
@@ -65,7 +65,8 @@ func CreateTable(db *sql.DB) {
 		"created_at" DATETIME DEFAULT CURRENT_TIMESTAMP,
 		"price_minus_15" INTEGER,
 		"fb_price" INTEGER,
-		"fb_link" TEXT
+		"fb_link" TEXT,
+		"active" TEXT DEFAULT 'N/A'
 	);`
 	_, err := db.Exec(createTableSQL)
 	if err != nil {
@@ -76,10 +77,10 @@ func CreateTable(db *sql.DB) {
 func UpdateProduct(db *sql.DB, product Product) error {
 	query := `
 		UPDATE products
-		SET price_amazon = ?, price_diff = ?, delivery_time = ?, used = ?, price_minus_15 = ?, fb_price = ?, fb_link = ?
+		SET price_amazon = ?, price_diff = ?, delivery_time = ?, used = ?, price_minus_15 = ?, fb_price = ?, fb_link = ?, active = ?
 		WHERE id = ?
 	`
-	_, err := db.Exec(query, product.PriceAmazon, product.PriceDiff, product.DeliveryTime, product.Used, product.PriceMinus15, product.FBPrice, product.FBLink, product.ID)
+	_, err := db.Exec(query, product.PriceAmazon, product.PriceDiff, product.DeliveryTime, product.Used, product.PriceMinus15, product.FBPrice, product.FBLink, product.ID, product.Active)
 	return err
 }
 func InsertOrUpdateProduct(db *sql.DB, product Product) error {

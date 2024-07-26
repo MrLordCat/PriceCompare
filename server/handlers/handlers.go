@@ -234,12 +234,13 @@ func UpdateFBPricesHandler(w http.ResponseWriter, r *http.Request, database *sql
 	for _, product := range products {
 		if product.FBLink.Valid {
 			productName := utils.CleanProductName(product.Title) // Очистка имени продукта
-			fbPrice, err := fb.GetFBPrice("https://www.facebook.com/marketplace/you/selling", productName)
+			fbPrice, activeStatus, err := fb.GetFBPrice("https://www.facebook.com/marketplace/you/selling", productName)
 			if err != nil {
 				log.Printf("Error fetching FB price for %s: %v", product.Title, err)
 				continue
 			}
 			product.FBPrice = sql.NullInt64{Int64: fbPrice, Valid: true}
+			product.Active = activeStatus
 			err = db.UpdateProduct(database, product)
 			if err != nil {
 				log.Printf("Error updating product %s: %v", product.Title, err)
