@@ -1,0 +1,56 @@
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Product Title</th>
+            <th>Offers</th>
+            <th class="price-header">Price HV (€)</th>
+            <th class="price-amazon-header">Price Amazon</th>
+            <th class="price-diff-header">Price Difference</th>
+            <th class="price-minus-15-header">Price -15%</th>
+            <th class="fb-price-header">FB Price</th>
+            <th>Used?</th>
+            <th>Link HV</th>
+            <th>Link Amazon</th>
+            <th class="fb-link-header">FB Link</th>
+            <th>Delivery Time</th>
+            <th>Category</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{range .Products}}
+        <tr>
+            <td>{{.ID}}</td>
+            <td class="title-amazon">{{.Title}}</td>
+            <td>{{.Offers}}</td>
+            <td class="price">{{.Price}}</td>
+            <td class="price-amazon">{{if .PriceAmazon.Valid}}{{.PriceAmazon.Int64}}{{else}}N/A{{end}}</td>
+            <td class="price-diff">N/A</td>
+            <td class="price-minus-15">{{if .PriceMinus15.Valid}}{{.PriceMinus15.Int64}}{{else}}N/A{{end}}</td>
+            <td class="fb-price">{{if .FBPrice.Valid}}{{.FBPrice.Int64}}{{else}}N/A{{end}}</td>
+            <td class="used">{{if .Used.Valid}}{{.Used.String}}{{else}}N/A{{end}}</td>
+            <td><a href="{{.LinkHV}}" target="_blank">Link</a></td>
+            <td class="link-amazon">{{if .LinkAmazon.Valid}}<a href="{{.LinkAmazon.String}}" target="_blank">Link</a>{{else}}N/A{{end}}</td>
+            <td class="fb-link">{{if .FBLink.Valid}}<a href="{{.FBLink.String}}" target="_blank">Link</a>{{else}}N/A{{end}}</td>
+            <td class="delivery-time">{{if .DeliveryTime.Valid}}{{.DeliveryTime.String}}{{else}}N/A{{end}}</td>
+            <td>{{if .Category.Valid}}{{.Category.String}}{{else}}N/A{{end}}</td>
+            <td>
+                <form class="update-amazon-link" action="/update" method="post">
+                    <input type="hidden" name="title" value="{{.Title}}">
+                    <input type="hidden" name="category" value="{{$.Selected}}">
+                    <input type="url" name="linkAmazon" placeholder="Amazon Link">
+                    <button type="submit">Update</button>
+                </form>
+                <form action="/update-fb" method="post" class="update-fb-link">
+                    <input type="hidden" name="title" value="{{.Title}}">
+                    <input type="hidden" name="category" value="{{$.Selected}}">
+                    <input type="url" name="FBLink" placeholder="FB Link">
+                    <button type="submit">Update FB</button>
+                </form>
+            </td>
+            
+        </tr>
+        {{end}}
+    </tbody>
+</table>

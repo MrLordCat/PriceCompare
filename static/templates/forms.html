@@ -1,0 +1,27 @@
+<h1>Product List</h1>
+<form action="/fetch-hv" method="post">
+    <input type="url" name="hvUrl" placeholder="HV.ee URL" required>
+    <button type="submit">Get prices from HV.ee</button>
+</form>
+<form action="/update-amazon-prices" method="post" style="margin-top: 20px;">
+    <input type="hidden" name="category" value="{{.Selected}}">
+    <button type="submit">Update Amazon Prices (Can take few mins)</button>
+</form>
+<form action="/update-fb-prices" method="post" style="margin-top: 20px;">
+    <input type="hidden" name="category" value="{{.Selected}}">
+    <button type="submit">Update FB Prices</button>
+</form>
+<form action="/" method="get" style="margin-top: 20px;">
+    <label for="category">Select Category:</label>
+    <select name="category" id="category" onchange="this.form.submit()">
+        {{range .Categories}}
+        <option value="{{.}}" {{if eq . $.Selected}}selected{{end}}>{{.}}</option>
+        {{end}}
+    </select>
+</form>
+
+<form action="/add-custom" method="post" style="margin-top: 20px;">
+    <input type="url" name="linkHV" placeholder="HV.ee URL" required>
+    <input type="hidden" name="category" value="Custom">
+    <button type="submit">Add Custom Product</button>
+</form>
