@@ -1,0 +1,28 @@
+/* Стили для использованных товаров */
+td.used {
+    background-color: rgba(131, 194, 131, 0.856); 
+}
+td.used.used-yes {
+    background-color: rgb(183, 74, 74); /* Цвет для "Yes" */
+}
+
+/* Общие стили для ссылок */
+a.link-icon {
+    display: inline-block;
+    width: 44px; /* Ширина иконки */
+    height: 44px; /* Высота иконки */
+    background-size: contain;
+    background-repeat: no-repeat;
+    text-indent: -9999px; /* Скрытие текста */
+    vertical-align: middle; /* Вертикальное выравнивание */
+}
+a.link-hv {
+    background-image: url('/static/img/hv-icon.png'); /* Путь к иконке Amazon */
+    width: 44px; /* Уменьшенная ширина иконки */
+    height: 44px; /* Уменьшенная высота иконки */
+    display: inline-block;
+    vertical-align: middle; /* Вертикальное выравнивание */
+}
+.invis {
+    color:rgba(8, 40, 40, 0)
+}

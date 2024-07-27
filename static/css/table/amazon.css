@@ -1,0 +1,36 @@
+/* Иконка Amazon */
+a.link-amazon {
+    background-image: url('/static/img/amazon-icon.png'); /* Путь к иконке Amazon */
+    width: 44px; /* Уменьшенная ширина иконки */
+    height: 44px; /* Уменьшенная высота иконки */
+    display: inline-block;
+    vertical-align: middle; /* Вертикальное выравнивание */
+}
+
+/* Стили для статуса N/A */
+.link-na {
+    background-color: rgba(174, 32, 32, 0.676);
+}
+
+/* Стили для статуса Available */
+.status-available {
+    color: rgba(33, 119, 33, 0.823);
+
+    font-weight: bold;
+    vertical-align: middle; /* Вертикальное выравнивание */
+}
+
+/* Стили для статуса Unavailable */
+.status-unavailable {
+    color: red;
+    font-weight: bold;
+    vertical-align: middle; /* Вертикальное выравнивание */
+}
+
+/* Стили для цены Amazon */
+.price-amazon {
+    display: block; /* Отображение цены на новой строке */
+    margin-top: 5px; /* Отступ сверху */
+    font-weight: bold;
+    vertical-align: middle; /* Вертикальное выравнивание */
+}

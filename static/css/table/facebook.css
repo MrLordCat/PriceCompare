@@ -1,0 +1,28 @@
+/* Иконка Facebook */
+a.link-fb {
+    background-image: url('/static/img/fb-icon.png'); /* Путь к иконке Facebook */
+    width: 44px; /* Уменьшенная ширина иконки */
+    height: 44px; /* Уменьшенная высота иконки */
+    display: inline-block;
+}
+
+/* Стили для статуса Active */
+.status-active {
+    display: block;
+    color: rgba(33, 119, 33, 0.823);
+    font-weight: bold;
+}
+
+/* Стили для статуса Inactive */
+.status-inactive {
+    display: block;
+    color: rgba(128, 128, 128, 0.767);
+    font-weight: bold;
+}
+
+/* Стили для цены Facebook */
+.fb-price {
+    display: block; /* Отображение цены на новой строке */
+    margin-top: 5px; /* Отступ сверху */
+    font-weight: bold;
+}

@@ -80,7 +80,7 @@ func UpdateProduct(db *sql.DB, product Product) error {
 		SET price_amazon = ?, price_diff = ?, delivery_time = ?, used = ?, price_minus_15 = ?, fb_price = ?, fb_link = ?, active = ?
 		WHERE id = ?
 	`
-	_, err := db.Exec(query, product.PriceAmazon, product.PriceDiff, product.DeliveryTime, product.Used, product.PriceMinus15, product.FBPrice, product.FBLink, product.ID, product.Active)
+	_, err := db.Exec(query, product.PriceAmazon, product.PriceDiff, product.DeliveryTime, product.Used, product.PriceMinus15, product.FBPrice, product.FBLink, product.Active, product.ID)
 	return err
 }
 func InsertOrUpdateProduct(db *sql.DB, product Product) error {
