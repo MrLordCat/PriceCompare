@@ -1,27 +1,64 @@
-<h1>Product List</h1>
-<form action="/fetch-hv" method="post">
-    <input type="url" name="hvUrl" placeholder="HV.ee URL" required>
-    <button type="submit">Get prices from HV.ee</button>
-</form>
-<form action="/update-amazon-prices" method="post" style="margin-top: 20px;">
-    <input type="hidden" name="category" value="{{.Selected}}">
-    <button type="submit">Update Amazon Prices (Can take few mins)</button>
-</form>
-<form action="/update-fb-prices" method="post" style="margin-top: 20px;">
-    <input type="hidden" name="category" value="{{.Selected}}">
-    <button type="submit">Update FB Prices</button>
-</form>
-<form action="/" method="get" style="margin-top: 20px;">
-    <label for="category">Select Category:</label>
-    <select name="category" id="category" onchange="this.form.submit()">
-        {{range .Categories}}
-        <option value="{{.}}" {{if eq . $.Selected}}selected{{end}}>{{.}}</option>
-        {{end}}
-    </select>
-</form>
-
-<form action="/add-custom" method="post" style="margin-top: 20px;">
-    <input type="url" name="linkHV" placeholder="HV.ee URL" required>
-    <input type="hidden" name="category" value="Custom">
-    <button type="submit">Add Custom Product</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/form.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/link.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/animation.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/table/additionals.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/table/amazon.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/table/facebook.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/table/table.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/progress.css">
+</head>
+<body>
+    <h1>Product List</h1>
+    <div class="form-container">
+        <!-- Контейнер для форм добавления товаров и выбора категории -->
+        <div class="form-section">
+            <form action="/fetch-hv" method="post" class="form-item">
+                <input type="url" name="hvUrl" placeholder="HV.ee URL" required>
+                <button type="submit" class="btn">Add new cateogry from HV</button>
+            </form>
+            <form action="/" method="get" class="form-item">
+                <label for="category">Select category</label>
+                <select name="category" id="category" onchange="this.form.submit()">
+                    {{range .Categories}}
+                    <option value="{{.}}" {{if eq . $.Selected}}selected{{end}}>{{.}}</option>
+                    {{end}}
+                </select>
+            </form>
+            <form action="/add-custom" method="post" class="form-item">
+                <input type="url" name="linkHV" placeholder="HV.ee URL" required>
+                <input type="hidden" name="category" value="Custom">
+                <button type="submit" class="btn">Add Custom Product</button>
+            </form>
+        </div>
+    </div>
+        <div class="form-container">
+        <!-- Контейнер для форм обновления цен -->
+        <div class="form-section">
+            <form action="/update-hv-prices" method="post" class="form-item">
+                <input type="hidden" name="category" value="{{$.Selected}}">
+                <button type="submit" class="btn">Update HV Prices</button>
+            </form>
+            <form id="update-amazon-form" action="/update-amazon-prices" method="post" class="form-item">
+                <input type="hidden" name="category" value="{{.Selected}}">
+                <button type="submit" class="btn">Update Amazon Prices</button>
+                <div id="progress-container">
+                    <div id="progress-bar">0%</div>
+                </div>
+            </form>
+            <form action="/update-fb-prices" method="post" class="form-item">
+                <input type="hidden" name="category" value="{{.Selected}}">
+                <button type="submit" class="btn">Update FB Prices</button>
+            </form>
+        </div>
+    </div>
+    <script src="/static/js/scripts.js"></script>
+</body>
+</html>

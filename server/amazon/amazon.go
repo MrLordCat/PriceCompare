@@ -50,15 +50,18 @@ var (
 	}
 	randSource = rand.New(rand.NewSource(uint64(time.Now().UnixNano())))
 )
+var captchaStatus = false
 
 func GetAmazonDetails(url string) (int64, string, sql.NullString, error) {
+	if captchaStatus {
+		return GetAmazonDetailsIncognito(url)
+	}
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return 0, "", sql.NullString{}, err
 	}
 
-	// Устанавливаем User-Agent
 	userAgent := userAgents[randSource.Intn(len(userAgents))]
 	req.Header.Set("User-Agent", userAgent)
 
@@ -76,9 +79,10 @@ func GetAmazonDetails(url string) (int64, string, sql.NullString, error) {
 	if err != nil {
 		return 0, "", sql.NullString{}, err
 	}
-	//time.Sleep(1 * time.Second)
+
 	if strings.Contains(strings.ToLower(doc.Text()), "captcha") {
 		fmt.Println("Captcha found on the page. Trying incognito.")
+		captchaStatus = true
 		return GetAmazonDetailsIncognito(url)
 	}
 	if strings.Contains(strings.ToLower(doc.Text()), "no featured offers available") || strings.Contains(strings.ToLower(doc.Text()), "keine hervorgehobenen angebote verfügbar") {
@@ -162,7 +166,5 @@ func GetAmazonDetailsIncognito(url string) (int64, string, sql.NullString, error
 	} else {
 		used = sql.NullString{String: "No", Valid: true}
 	}
-	fmt.Println("IS USED:", used)
-	fmt.Println("Sucess, Price:", price, ". Delivery Date:", deliveryDate)
 	return price, deliveryDate, used, nil
 }

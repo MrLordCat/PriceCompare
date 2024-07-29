@@ -28,9 +28,11 @@ func main() {
 	http.HandleFunc("/fetch-hv", func(w http.ResponseWriter, r *http.Request) {
 		handlers.FetchHvHandler(w, r, database)
 	})
+
 	http.HandleFunc("/update-amazon-prices", func(w http.ResponseWriter, r *http.Request) {
 		handlers.UpdateAmazonPricesHandler(w, r, database)
 	})
+	http.HandleFunc("/get-progress", handlers.GetProgressHandler)
 	http.HandleFunc("/add-custom", func(w http.ResponseWriter, r *http.Request) {
 		handlers.AddCustomProductHandler(w, r, database)
 	})

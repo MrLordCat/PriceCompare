@@ -12,7 +12,6 @@ import (
 func EnsureLoggedIn() (*rod.Browser, error) {
 	// Указание пути к исполняемому файлу браузера и использование постоянного профиля
 	u := launcher.New().
-		Set("load-extension", "/home/roppi/amazonPriceGet/SingleFile-master").
 		Set("user-data-dir", "/path/to/your/chrome/profile").
 		Headless(false).
 		MustLaunch()

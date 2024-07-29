@@ -1,0 +1,36 @@
+#progress-container {
+    width: 100%;
+    background-color: #f3f3f3;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    display: none; /* Скрыть контейнер прогресса по умолчанию */
+}
+#progress-bar {
+    width: 0;
+    height: 30px;
+    background-color: #4caf50;
+    text-align: center;
+    line-height: 30px;
+    color: white;
+    transition: width 0.4s ease; /* Анимация изменения ширины */
+}
+
+.btn {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Анимация изменения фона кнопки */
+}
+
+.btn:hover {
+    background-color: #45a049;
+}
+
+.form-item {
+    margin-bottom: 20px;
+}

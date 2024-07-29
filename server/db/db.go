@@ -68,12 +68,26 @@ func CreateTable(db *sql.DB) {
 		"fb_link" TEXT,
 		"active" TEXT DEFAULT 'N/A'
 	);`
+	createCategoriesTableSQL := `CREATE TABLE IF NOT EXISTS categories (
+		"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+		"category" TEXT NOT NULL UNIQUE,
+		"url" TEXT NOT NULL
+	);`
 	_, err := db.Exec(createTableSQL)
+	if err != nil {
+		log.Fatal(err)
+
+	}
+	_, err = db.Exec(createCategoriesTableSQL)
 	if err != nil {
 		log.Fatal(err)
 	}
 }
-
+func AddCategoryIfNotExists(db *sql.DB, category, url string) error {
+	query := `INSERT INTO categories (category, url) VALUES (?, ?) ON CONFLICT(category) DO NOTHING;`
+	_, err := db.Exec(query, category, url)
+	return err
+}
 func UpdateProduct(db *sql.DB, product Product) error {
 	query := `
 		UPDATE products
@@ -94,4 +108,13 @@ func InsertOrUpdateProduct(db *sql.DB, product Product) error {
 			category = excluded.category`
 	_, err := db.Exec(query, product.Title, product.Offers, product.Price, product.LinkHV, product.Category)
 	return err
+}
+func GetCategoryUrl(db *sql.DB, category string) (string, error) {
+	var url string
+	query := `SELECT url FROM categories WHERE category = ?`
+	err := db.QueryRow(query, category).Scan(&url)
+	if err != nil {
+		return "", err
+	}
+	return url, nil
 }

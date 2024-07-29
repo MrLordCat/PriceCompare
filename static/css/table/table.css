@@ -1,28 +1,67 @@
-table {
-    width: 90%;
-    border-collapse: collapse;
+/* table.css */
+.table-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
     margin: 20px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-x: auto; /* Для горизонтального скроллинга на мобильных устройствах */
 }
+
+table {
+    width: 100%;
+    max-width: 1200px; /* Ограничение максимальной ширины таблицы */
+    border-collapse: collapse;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 th, td {
     padding: 12px 15px;
     border: 1px solid #ddd;
     text-align: center;
     border-bottom: 1px solid #ddd;
+    max-width: 150px; /* Ограничение максимальной ширины столбцов */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
+
 th {
     background-color: #007BFF;
     color: white;
     position: sticky;
     top: 0;
 }
+
 tr:hover {
     background-color: #f1f1f1;
 }
 
 /* Стили для цены */
-.price, .price-amazon, .price-diff {
+.price, .price-amazon {
     display: block;
     margin-top: 5px;
     font-weight: bold;
+}
+
+/* Дополнительные стили для улучшения визуального восприятия */
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+/*th, td {
+    white-space: nowrap; /* Отключение переноса текста 
+}*/
+
+@media (max-width: 768px) {
+    th, td {
+        font-size: 0.9em;
+        padding: 8px 10px;
+    }
 }

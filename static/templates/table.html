@@ -1,80 +1,83 @@
-<table>
-    <thead>
-        <tr>
-            <th>Product Title</th>
-            <th>Used?</th>
-            <th>Delivery Time</th>
-            <th>HV</th>
-            <th>Amazon</th>
-            <th class="fb-link-header">FB</th>
-            <th class="price-diff-header">Price Difference</th>
-            <th class="price-minus-15-header">Price -15%</th>
-            <th>Category</th>
-            <th>Amazon link</th>
-            <th>FB link</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{range .Products}}
-        <tr>
-            <td class="title-amazon">{{.Title}}</td>
-            <td class="used">{{if .Used.Valid}}{{.Used.String}}{{else}}N/A{{end}}</td>
-            <td class="delivery-time">{{if .DeliveryTime.Valid}}{{.DeliveryTime.String}}{{else}}N/A{{end}}</td>
-            <td>
-                <span class="invis">.</span>
-                <a href="{{.LinkHV}}" target="_blank" class="link-icon link-hv">Link</a>
-                <span class="price" data-price="{{.Price}}">{{.Price}}</span>
-            </td>
-            <td class="{{if .LinkAmazon.Valid}}link-amazon{{else}}link-na{{end}}">
-                {{if .LinkAmazon.Valid}}
-                    {{if .DeliveryTime.Valid}}
-                        {{if eq .DeliveryTime.String "N/A"}}
-                            <span class="status-unavailable">Unavailable</span>
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Product Title</th>
+                <th>Used?</th>
+                <th>Delivery Time</th>
+                <th>HV</th>
+                <th>Amazon</th>
+                <th class="fb-link-header">FB</th>
+                <th class="price-diff-header">Price Difference</th>
+                <th class="price-minus-15-header">Price -15%</th>
+                <th>Category</th>
+                <th>Amazon link</th>
+                <th>FB link</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{range .Products}}
+            <tr>
+                <td class="title-amazon">{{.Title}}</td>
+                <td class="used">{{if .Used.Valid}}{{.Used.String}}{{else}}N/A{{end}}</td>
+                <td class="delivery-time">{{if .DeliveryTime.Valid}}{{.DeliveryTime.String}}{{else}}N/A{{end}}</td>
+                <td>
+                    <span class="invis">.</span>
+                    <a href="{{.LinkHV}}" target="_blank" class="link-icon link-hv">Link</a>
+                    <span class="price" data-price="{{.Price}}">{{.Price}}</span>
+                </td>
+                <td class="{{if .LinkAmazon.Valid}}link-amazon{{else}}link-na{{end}}">
+                    {{if .LinkAmazon.Valid}}
+                        {{if .DeliveryTime.Valid}}
+                            {{if eq .DeliveryTime.String "N/A"}}
+                                <span class="status-unavailable">Unavailable</span>
+                            {{else}}
+                                <span class="status-available">Available</span>
+                            {{end}}
                         {{else}}
-                            <span class="status-available">Available</span>
+                            <span class="status-unavailable">Unavailable</span>
                         {{end}}
+                        <a href="{{.LinkAmazon.String}}" target="_blank" class="link-icon link-amazon">Link</a>
+                        <span class="price-amazon">{{if .PriceAmazon.Valid}}{{.PriceAmazon.Int64}}€{{else}}N/A{{end}}</span>
+
                     {{else}}
-                        <span class="status-unavailable">Unavailable</span>
+                        N/A
                     {{end}}
-                    <a href="{{.LinkAmazon.String}}" target="_blank" class="link-icon link-amazon">Link</a>
-                    <span class="price-amazon">{{if .PriceAmazon.Valid}}{{.PriceAmazon.Int64}}{{else}}N/A{{end}}</span>
-                {{else}}
-                    N/A
-                {{end}}
-            </td>
-            <td class="fb-link {{if .FBLink.Valid}}link-fb{{else}}link-na{{end}}">
-                {{if .FBLink.Valid}}
-                    {{if eq .Active "Active"}}
-                        <span class="status-active">Active</span>
+                </td>
+                <td class="fb-link {{if .FBLink.Valid}}link-fb{{else}}link-na{{end}}">
+                    {{if .FBLink.Valid}}
+                        {{if eq .Active "Active"}}
+                            <span class="status-active">Active</span>
+                        {{else}}
+                            <span class="status-inactive">Inactive</span>
+                        {{end}}
+                        <a href="{{.FBLink.String}}" target="_blank" class="link-icon link-fb">Link</a>
+                        <span class="fb-price">{{if .FBPrice.Valid}}{{.FBPrice.Int64}}€{{else}}N/A{{end}}</span>
                     {{else}}
-                        <span class="status-inactive">Inactive</span>
+                        N/A
                     {{end}}
-                    <a href="{{.FBLink.String}}" target="_blank" class="link-icon link-fb">Link</a>
-                    <span class="fb-price">{{if .FBPrice.Valid}}{{.FBPrice.Int64}}{{else}}N/A{{end}}</span>
-                {{else}}
-                    N/A
-                {{end}}
-            </td>
-            <td class="price-diff">N/A</td>
-            <td class="price-minus-15" data-price-minus-15>N/A</td>
-            <td>{{if .Category.Valid}}{{.Category.String}}{{else}}N/A{{end}}</td>
-            <td>
-                <form class="update-amazon-link" action="/update" method="post">
-                    <input type="hidden" name="title" value="{{.Title}}">
-                    <input type="hidden" name="category" value="{{$.Selected}}">
-                    <input type="url" name="linkAmazon" placeholder="Amazon Link">
-                    <button type="submit">Update</button>
-                </form>
-            </td>
-        <td>
-                <form action="/update-fb" method="post" class="update-fb-link">
-                    <input type="hidden" name="title" value="{{.Title}}">
-                    <input type="hidden" name="category" value="{{$.Selected}}">
-                    <input type="url" name="FBLink" placeholder="FB Link">
-                    <button type="submit">Update FB</button>
-                </form>
-            </td>
-        </tr>
-        {{end}}
-    </tbody>
-</table>
+                </td>
+                <td class="price-diff">N/A</td>
+                <td class="price-minus-15" data-price-minus-15>N/A</td>
+                <td>{{if .Category.Valid}}{{.Category.String}}{{else}}N/A{{end}}</td>
+                <td>
+                    <form class="update-amazon-link" action="/update" method="post">
+                        <input type="hidden" name="title" value="{{.Title}}">
+                        <input type="hidden" name="category" value="{{$.Selected}}">
+                        <input type="url" name="linkAmazon" placeholder="Amazon Link">
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/update-fb" method="post" class="update-fb-link">
+                        <input type="hidden" name="title" value="{{.Title}}">
+                        <input type="hidden" name="category" value="{{$.Selected}}">
+                        <input type="url" name="FBLink" placeholder="FB Link">
+                        <button type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</div>

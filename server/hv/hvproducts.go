@@ -34,6 +34,12 @@ func GetHvProducts(database *sql.DB, url string) ([]db.Product, error) {
 	category := doc.Find("div.header.svelte-uvmab2 h1.svelte-uvmab2").Text()
 	category = strings.TrimSpace(category)
 
+	// Добавление категории в базу данных, если она еще не была записана
+	err = db.AddCategoryIfNotExists(database, category, url)
+	if err != nil {
+		return nil, fmt.Errorf("error adding category to database: %v", err)
+	}
+
 	doc.Find("tr.svelte-1gwx8vp").Each(func(i int, s *goquery.Selection) {
 		// Извлечение названия продукта
 		title := s.Find("a.product-name.subtitle-main.svelte-1gwx8vp").Text()
@@ -78,6 +84,7 @@ func GetHvProducts(database *sql.DB, url string) ([]db.Product, error) {
 
 	return products, nil
 }
+
 func FetchCustomProductDetails(link string) (db.Product, error) {
 	res, err := http.Get(link)
 	if err != nil {

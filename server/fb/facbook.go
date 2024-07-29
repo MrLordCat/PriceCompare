@@ -79,7 +79,7 @@ func parsePriceFromHTML(html, productName string) (int64, string, error) {
 	var activeStatus string
 	var priceStr string
 	var foundProduct bool
-
+	var prices []string
 	doc.Find("div").Each(func(i int, s *goquery.Selection) {
 		if strings.Contains(s.Text(), productName) {
 			foundProduct = true
@@ -91,23 +91,27 @@ func parsePriceFromHTML(html, productName string) (int64, string, error) {
 			if err != nil {
 				return
 			}
+
 			blockDoc.Find("span").Each(func(j int, span *goquery.Selection) {
 				text := strings.TrimSpace(span.Text())
 				if strings.Contains(text, "€") {
-					priceStr = text
+					// Найти первую цену и обрезать все после второго символа "€"
+					euroIndex := strings.Index(text, "€")
+					secondEuroIndex := strings.Index(text[euroIndex+1:], "€")
+					if secondEuroIndex != -1 {
+						// Увеличить индекс второго "€", чтобы учитывать начальную часть строки
+						secondEuroIndex += euroIndex + 1
+						text = text[:secondEuroIndex]
+					}
+					prices = append(prices, text)
 				}
 				if strings.Contains(text, "Active") {
 					activeStatus = "Active"
 				}
 			})
-
-			// Если нашли продукт и цену, завершаем поиск
-			if priceStr != "" {
-				return
-			}
 		}
 	})
-
+	priceStr = prices[0]
 	if !foundProduct {
 		return 0, "", fmt.Errorf("product not found: %s", productName)
 	}
@@ -119,8 +123,8 @@ func parsePriceFromHTML(html, productName string) (int64, string, error) {
 		activeStatus = "Inactive"
 	}
 
-	fmt.Println("FB PRICE (", productName, "):", priceStr)
-	fmt.Println("Status:", activeStatus)
+	//fmt.Println("FB PRICE (", productName, "):", priceStr)
+	//	fmt.Println("Status:", activeStatus)
 	price := utils.Int64FromPriceStr(priceStr)
 
 	return price, activeStatus, nil

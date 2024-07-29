@@ -1,7 +1,5 @@
 /* Стили для использованных товаров */
-td.used {
-    background-color: rgba(131, 194, 131, 0.856); 
-}
+
 td.used.used-yes {
     background-color: rgb(183, 74, 74); /* Цвет для "Yes" */
 }

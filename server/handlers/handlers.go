@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"amazonPriceGet/server/amazon"
 	"amazonPriceGet/server/db"
 	"amazonPriceGet/server/fb"
 	"amazonPriceGet/server/hv"
@@ -52,6 +51,7 @@ func GetAllProducts(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }
+
 func FetchHvHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
@@ -71,79 +71,6 @@ func FetchHvHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
 	}
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
-}
-func UpdateAmazonPricesHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-		return
-	}
-
-	category := r.FormValue("category")
-	if category == "" {
-		http.Error(w, "Category not specified", http.StatusBadRequest)
-		return
-	}
-
-	products, err := db.GetProductsByCategoryFromDB(database, category)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	for _, product := range products {
-		if product.LinkAmazon.Valid {
-			priceAmazon, deliveryTime, used, err := amazon.GetAmazonDetails(product.LinkAmazon.String)
-			if err != nil {
-				log.Printf("Error fetching Amazon details for %s: %v", product.Title, err)
-				continue
-			}
-			product.PriceAmazon = sql.NullInt64{Int64: priceAmazon, Valid: true}
-			product.DeliveryTime = sql.NullString{String: deliveryTime, Valid: true}
-			product.PriceDiff = sql.NullInt64{Int64: product.Price - priceAmazon, Valid: true}
-			product.Used = used
-			err = db.UpdateProduct(database, product)
-			if err != nil {
-				log.Printf("Error updating product %s: %v", product.Title, err)
-			}
-		}
-	}
-
-	http.Redirect(w, r, fmt.Sprintf("/?category=%s", category), http.StatusSeeOther)
-}
-
-func UpdateAmazonLinkHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-		return
-	}
-	category := r.FormValue("category")
-	if category == "" {
-		http.Error(w, "Category not specified", http.StatusBadRequest)
-		return
-	}
-	title := r.FormValue("title")
-	if title == "" {
-		http.Error(w, "Invalid product title", http.StatusBadRequest)
-		return
-	}
-
-	linkAmazon := r.FormValue("linkAmazon")
-	var linkAmazonValue sql.NullString
-
-	if linkAmazon == "" {
-		linkAmazonValue = sql.NullString{String: "", Valid: false}
-	} else {
-		linkAmazonValue = sql.NullString{String: linkAmazon, Valid: true}
-	}
-
-	// Выполнение обновления
-	result, err := database.Exec("UPDATE products SET link_amazon = ? WHERE title = ?", linkAmazonValue, title)
-	if err != nil {
-		fmt.Println("Error updating database:", err, result)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	http.Redirect(w, r, fmt.Sprintf("/?category=%s", category), http.StatusSeeOther)
 }
 
 func AddCustomProductHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
@@ -249,4 +176,30 @@ func UpdateFBPricesHandler(w http.ResponseWriter, r *http.Request, database *sql
 	}
 
 	http.Redirect(w, r, fmt.Sprintf("/?category=%s", category), http.StatusSeeOther)
+}
+func UpdateHvPricesHandler(w http.ResponseWriter, r *http.Request, database *sql.DB) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		return
+	}
+
+	category := r.FormValue("category")
+	if category == "" {
+		http.Error(w, "Category not specified", http.StatusBadRequest)
+		return
+	}
+
+	url, err := db.GetCategoryUrl(database, category)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	_, err = hv.GetHvProducts(database, url)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/products?category=%s", category), http.StatusSeeOther)
 }
